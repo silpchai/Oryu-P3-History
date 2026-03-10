@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>แบบทดสอบวีรบุรุษและวีรสตรีไทย ป.3</title>
+    <style>
+        :root {
+            --gold: #d4af37;
+            --dark-red: #8b0000;
+            --thai-blue: #00247d;
+            --bg-paper: #fdfaf1;
+            --success: #27ae60;
+            --error: #e74c3c;
+        }
+
+        body {
+            font-family: 'Sarabun', 'Tahoma', sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .quiz-container {
+            max-width: 800px;
+            width: 100%;
+            background: var(--bg-paper);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border: 2px solid var(--gold);
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 3px double var(--gold);
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+        }
+
+        h1 { color: var(--dark-red); margin: 0; font-size: 2rem; }
+        .section-title {
+            background: var(--dark-red);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            margin: 40px 0 20px 0;
+            font-size: 1.2rem;
+            box-shadow: 3px 3px 0 var(--gold);
+        }
+
+        .q-card {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            border-left: 5px solid var(--gold);
+        }
+
+        .q-text {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        @media (max-width: 600px) {
+            .options { grid-template-columns: 1fr; }
+        }
+
+        .opt-btn {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #fff;
+            cursor: pointer;
+            font-size: 1rem;
+            text-align: left;
+            transition: 0.2s;
+        }
+
+        .opt-btn:hover:not(:disabled) {
+            background-color: #fff9e6;
+            border-color: var(--gold);
+        }
+
+        .correct { background-color: var(--success) !important; color: white; border-color: #1e8449 !important; }
+        .wrong { background-color: var(--error) !important; color: white; border-color: #c0392b !important; }
+
+        .feedback {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            background: #f9f9f9;
+            border: 1px dashed #ccc;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            color: #777;
+            font-size: 0.9rem;
+            border-top: 1px solid #ddd;
+            padding-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container">
+    <header>
+        <h1>⚔️ วีรบุรุษและวีรสตรีไทย ⚔️</h1>
+        <p>แบบทดสอบวิชาประวัติศาสตร์ ชั้นประถมศึกษาปีที่ 3</p>
+    </header>
+
+    <div id="quiz-content"></div>
+
+    <footer>
+        เรียนรู้ประวัติศาสตร์ไทย เพื่อความภูมิใจในชาติ
+    </footer>
+</div>
+
+<script>
+    const quizData = [
+        { section: "ตอนที่ 1: สมเด็จพระนเรศวรมหาราช", 
+          questions: [
+            { q: "สมเด็จพระนเรศวรมหาราชทรงมีพระนามเรียกเล่นว่าอะไร?", a: ["พระองค์ขาว", "พระองค์ทอง", "พระองค์ดำ", "พระองค์แดง"], c: 2, r: "เฉลย: ค. พระองค์ดำ (ทรงเป็นพระโอรสของสมเด็จพระมหาธรรมราชากับพระวิสุทธิกษัตรี)" },
+            { q: "พระนเรศวรทรงประกาศอิสรภาพ ณ เมืองใด?", a: ["เมืองพิษณุโลก", "เมืองแครง", "เมืองหงสาวดี", "เมืองอโยธยา"], c: 1, r: "เฉลย: ข. เมืองแครง โดยทรงหลั่งทักษิโณทกเพื่อตัดความสัมพันธ์กับหงสาวดี" },
+            { q: "การกระทำ 'ทักษิโณทก' ในการประกาศอิสรภาพหมายถึงอะไร?", a: ["การดื่มน้ำสาบาน", "การรำถวายตัว", "การกรวดน้ำลงสู่พื้นดิน", "การรดน้ำสังข์"], c: 2, r: "เฉลย: ค. การกรวดน้ำลงสู่พื้นดิน เพื่อเป็นสักขีพยานในการประกาศอิสรภาพ" },
+            { q: "วีรกรรมอันยิ่งใหญ่ที่ทรงทำยุทธหัตถีชนะพระมหาอุปราชา ทรงใช้พระแสงอาวุธชนิดใด?", a: ["พระแสงดาบคาบค่าย", "พระแสงปืนต้นข้ามแม่น้ำสะโตง", "พระแสงของ้าว", "พระแสงทวน"], c: 2, r: "เฉลย: ค. พระแสงของ้าว (ทรงฟันพระมหาอุปราชาจนสิ้นพระชนม์บนคอช้าง)" },
+            { q: "สมเด็จพระนเรศวรทรงครองราชย์เป็นกษัตริย์ลำดับที่เท่าใดของอาณาจักรอยุธยา?", a: ["ลำดับที่ 1", "ลำดับที่ 10", "ลำดับที่ 18", "ลำดับที่ 20"], c: 2, r: "เฉลย: ค. ลำดับที่ 18 (ในราชวงศ์สุโขทัย)" }
+          ]
+        },
+        { section: "ตอนที่ 2: ท้าวเทพกระษัตรี และ ท้าวศรีสุนทร", 
+          questions: [
+            { q: "ท้าวเทพกระษัตรี และ ท้าวศรีสุนทร เป็นวีรสตรีที่ปกป้องเมืองใด?", a: ["เมืองนครศรีธรรมราช", "เมืองถลาง (ภูเก็ต)", "เมืองสงขลา", "เมืองระนอง"], c: 1, r: "เฉลย: ข. เมืองถลาง" },
+            { q: "ก่อนได้รับพระราชทานบรรดาศักดิ์ วีรสตรีทั้งสองมีชื่อเดิมว่าอะไร?", a: ["คุณหญิงโม และ นางสาวบุญเหลือ", "คุณหญิงจัน และ คุณมุก", "นางพิม และ นางสายหยุด", "นางนพมาศ และ นางแสน"], c: 1, r: "เฉลย: ข. คุณหญิงจัน และ คุณมุก" },
+            { q: "กลอุบายใดที่ท่านใช้ในการหลอกกองทัพพม่าให้ถอยทัพไป?", a: ["การแกล้งทำเป็นยอมแพ้", "การแต่งตัวเป็นผู้ชายให้ดูเหมือนมีกำลังทหารมาก", "การลอบเผาค่ายศัตรูตอนกลางคืน", "การใช้ปืนใหญ่ยิงข่มขวัญ"], c: 1, r: "เฉลย: ข. การแต่งตัวเป็นผู้ชาย โดยรวบรวมผู้หญิงมาแต่งกายคล้ายทหารเพื่อให้พม่าคิดว่าไทยมีกำลังเสริม" },
+            { q: "วีรกรรมของท่านทั้งสองเกิดขึ้นในรัชสมัยใดของกรุงรัตนโกสินทร์?", a: ["รัชกาลที่ 1", "รัชกาลที่ 3", "รัชกาลที่ 5", "รัชกาลที่ 9"], c: 0, r: "เฉลย: ก. รัชกาลที่ 1 (สมเด็จพระพุทธยอดฟ้าจุฬาโลกมหาราช)" },
+            { q: "'อนุสาวรีย์ท้าวเทพกระษัตรี ท้าวศรีสุนทร' ตั้งอยู่ที่จังหวัดใด?", a: ["กรุงเทพมหานคร", "สุพรรณบุรี", "ภูเก็ต", "กาญจนบุรี"], c: 2, r: "เฉลย: ค. ภูเก็ต" }
+          ]
+        },
+        { section: "ตอนที่ 3: ชาวบ้านบางระจัน", 
+          questions: [
+            { q: "วีรกรรมของชาวบ้านบางระจันเกิดขึ้นเพื่อต่อสู้กับกองทัพของชาติใด?", a: ["ขอม", "พม่า", "ลาว", "ฝรั่งเศส"], c: 1, r: "เฉลย: ข. พม่า" },
+            { q: "ใครคือบุคคลที่ได้รับเลือกให้เป็น 'หัวหน้า' ค่ายบางระจัน?", a: ["นายทองเหม็น", "นายจันหนวดเขี้ยว", "ขุนสรรค์", "พระอาจารย์ธรรมโชติ"], c: 1, r: "เฉลย: ข. นายจันหนวดเขี้ยว (เป็นหนึ่งในผู้นำสำคัญที่ชาวบ้านให้ความนับถือ)" },
+            { q: "ชาวบ้านบางระจันรวมพลังกันต่อสู้กับการโจมตีของพม่าได้กี่ครั้งก่อนจะพ่ายแพ้?", a: ["1 ครั้ง", "3 ครั้ง", "7 ครั้ง", "10 ครั้ง"], c: 2, r: "เฉลย: ค. 7 ครั้ง (พม่าตีไม่สำเร็จถึง 7 ครั้ง จนกระทั่งครั้งที่ 8 ค่ายจึงแตก)" },
+            { q: "สาเหตุสำคัญที่ทำให้ค่ายบางระจันต้องพ่ายแพ้ในที่สุดคืออะไร?", a: ["ขาดแคลนอาหาร", "เกิดโรคระบาดในค่าย", "ไม่มีปืนใหญ่ที่ใช้การได้", "หัวหน้าค่ายเกิดความขัดแย้งกันเอง"], c: 2, r: "เฉลย: ค. ไม่มีปืนใหญ่ แม้จะพยายามหล่อปืนใหญ่เองแต่ก็แตกร้าวใช้งานไม่ได้" },
+            { q: "วีรกรรมของชาวบ้านบางระจันให้บทเรียนเรื่องใดแก่คนรุ่นหลัง?", a: ["ความรักในการทำอาหาร", "ความสามัคคีและความรักชาติ", "วิธีรักษาโรคด้วยสมุนไพร", "การค้าขายกับต่างประเทศ"], c: 1, r: "เฉลย: ข. ความสามัคคีและความรักชาติของชาวบ้านธรรมดา" }
+          ]
+        },
+        { section: "ตอนที่ 4: พระยาพิชัยดาบหัก", 
+          questions: [
+            { q: "พระยาพิชัยดาบหัก เป็นทหารเอกของพระมหากษัตริย์พระองค์ใด?", a: ["สมเด็จพระนเรศวรมหาราช", "สมเด็จพระเจ้าตากสินมหาราช", "สมเด็จพระเอกาทศรถ", "สมเด็จพระนารายณ์มหาราช"], c: 1, r: "เฉลย: ข. สมเด็จพระเจ้าตากสินมหาราช" },
+            { q: "พระยาพิชัยมีชื่อเดิมว่าอะไร?", a: ["นายทองดี (ฟันขาว)", "นายทองอิน", "นายมั่น", "นายบุญมี"], c: 0, r: "เฉลย: ก. นายทองดี (หรือที่รู้จักในนาม 'จ้อย' ตอนเด็ก และ 'ทองดีฟันขาว')" },
+            { q: "เหตุใดท่านจึงได้รับฉายาว่า 'ดาบหัก'?", a: ["เพราะท่านชอบทำดาบหักบ่อยๆ", "เพราะดาบของท่านเก่าจนหักเอง", "เพราะท่านสู้รบอย่างห้าวหาญจนดาบหักแต่ยังสู้ต่อ", "เพราะใช้ดาบหักเพื่อความท้าทาย"], c: 2, r: "เฉลย: ค. ท่านรบจนดาบหักแต่ไม่ยอมหยุด แสดงถึงความกล้าหาญและจิตวิญญาณนักรบ" },
+            { q: "ก่อนจะเข้ารับราชการ พระยาพิชัยมีความสามารถโดดเด่นในเรื่องใด?", a: ["การวาดภาพ", "การร่ายรำ", "มวยไทยและการฟันดาบ", "การแต่งกลอน"], c: 2, r: "เฉลย: ค. มวยไทยและการฟันดาบ (ท่านเดินทางไปหาครูมวยเพื่อฝึกฝนตนเอง)" },
+            { q: "อนุสาวรีย์พระยาพิชัยดาบหัก ตั้งอยู่ที่จังหวัดใด?", a: ["จังหวัดพิษณุโลก", "จังหวัดอุตรดิตถ์", "จังหวัดตาก", "จังหวัดสุโขทัย"], c: 1, r: "เฉลย: ข. จังหวัดอุตรดิตถ์ (ถิ่นกำเนิดของท่านอยู่ที่บ้านห้วยคา เมืองพิชัย)" }
+          ]
+        }
+    ];
+
+    const contentArea = document.getElementById('quiz-content');
+    let questionCounter = 0;
+
+    quizData.forEach((sec) => {
+        const secHeader = document.createElement('div');
+        secHeader.className = 'section-title';
+        secHeader.innerText = sec.section;
+        contentArea.appendChild(secHeader);
+
+        sec.questions.forEach((item) => {
+            const card = document.createElement('div');
+            card.className = 'q-card';
+            
+            let optionsHtml = '';
+            item.a.forEach((opt, idx) => {
+                optionsHtml += `<button class="opt-btn" onclick="checkAnswer(${questionCounter}, ${idx}, this)">${opt}</button>`;
+            });
+
+            card.innerHTML = `
+                <span class="q-text">${questionCounter + 1}. ${item.q}</span>
+                <div class="options">${optionsHtml}</div>
+                <div id="fb-${questionCounter}" class="feedback"></div>
+            `;
+            contentArea.appendChild(card);
+            
+            // เก็บข้อมูลเฉลยไว้ในตัวแปร global แบบชั่วคราวผ่าน dataset
+            card.dataset.correct = item.c;
+            card.dataset.rationale = item.r;
+            
+            questionCounter++;
+        });
+    });
+
+    window.checkAnswer = function(qIdx, choice, btn) {
+        const card = btn.closest('.q-card');
+        const feedback = document.getElementById(`fb-${qIdx}`);
+        const buttons = card.querySelectorAll('.opt-btn');
+        const correctIdx = parseInt(card.dataset.correct);
+        const rationale = card.dataset.rationale;
+
+        if (feedback.style.display === 'block') return;
+
+        buttons.forEach(b => b.disabled = true);
+
+        if (choice === correctIdx) {
+            btn.classList.add('correct');
+            feedback.style.color = 'var(--success)';
+            feedback.innerHTML = `✅ <b>ถูกต้อง!</b><br>${rationale}`;
+        } else {
+            btn.classList.add('wrong');
+            buttons[correctIdx].classList.add('correct');
+            feedback.style.color = 'var(--error)';
+            feedback.innerHTML = `❌ <b>ยังไม่ถูกนะ...</b><br>${rationale}`;
+        }
+        feedback.style.display = 'block';
+    }
+</script>
+
+</body>
+</html>
